@@ -1,0 +1,34 @@
+pipeline{
+    agent any
+    stages{
+        stage("checkout"){
+            steps{
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/subhash2020/sample-java-project.git']]])
+            }
+        }
+
+        stage("build"){
+            steps{
+                sh 'mvn install'
+            }
+        }
+
+        stage("build"){
+            steps{
+                archiveArtifacts artifacts: '**/*.war', followSymlinks: false
+            }
+        }
+    }
+
+    post{
+        always{
+            echo "========always========"
+        }
+        success{
+            echo "========pipeline executed successfully ========"
+        }
+        failure{
+            echo "========pipeline execution failed========"
+        }
+    }
+}
